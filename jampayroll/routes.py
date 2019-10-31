@@ -25,25 +25,37 @@ def setup():
     pass
     # Recreate database each time for demo
     # db.drop_all()
-    # db.create_all()
+    db.create_all()
 
 @app.route("/")
 @app.route("/addemployee", methods=["GET", "POST"]) 
 def addemployee():
     user_input_first = EmployeeForm()
     if request.method == "POST":
-        user_input = EmployeeForm(obj = request.form)
-        
-        #  database create entry
-        db.session.add(user_input)
-        db.session.commit()
+        user_input_received = EmployeeForm(obj=request.form)
+        employee_to_database = Employe3(
+            firstName = request.form["firstName"],
+            middleName = request.form["middleName"],
+            lastName=request.form["lastName"],
+            companyName = request.form["companyName"],
+            allowance = request.form["allowance"],
+            hourlyRate = request.form["hourlyRate"]
+            )
+        flash('Employee added to database', 'success')
+        flash('Use forms to generate a paystub', 'info')
 
-        
+        # database create entry
+        db.session.add(employee_to_database)
+        # db.session.add(user_input_received)
+        db.session.commit()
+        AllEmployees = db.session.query(Employe3.lastName, Employe3.firstName, Employe3.middleName, Employe3.companyName, Employe3.allowance, Employe3.hourlyRate).all()
         return render_template(
             "addemployee_data.html",
-            EmployeeFormData = AddEmployeeF0rmData
+            EmployeeFormData=user_input_received,
+            title='employee added',
+            AllEmployees = AllEmployees
         )
-    return render_template("addemployee.html", EmployeeForm = user_input_first)
+    return render_template("addemployee.html", EmployeeForm = user_input_first, title = 'add employee')
 
 
 @app.route('/timesheet', methods = ['POST', 'GET'])

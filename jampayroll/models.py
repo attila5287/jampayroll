@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
-    # employees = db.relationship('Employee', backref='author', lazy=True)
+    employees = db.relationship('Employee', backref='author', lazy=True)
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
@@ -33,6 +33,7 @@ class Post(db.Model):
 class Employee(db.Model):
     # __tablename__ = 'employee'
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     firstName = db.Column(db.String(64))
     middleName = db.Column(db.String(64))
     lastName = db.Column(db.String(64))
@@ -40,7 +41,6 @@ class Employee(db.Model):
     allowance = db.Column(db.Integer)
     hourlyRate = db.Column(db.Float)
     hoursWorked = db.Column(db.Float)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return '<Employee %r %r>' % (self.firstName, self.lastName) 
@@ -48,7 +48,7 @@ class Employee(db.Model):
 class Employe3(db.Model):
     # __tablename__ = 'employee'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     firstName = db.Column(db.String(64))
     middleName = db.Column(db.String(64))
     lastName = db.Column(db.String(64))
